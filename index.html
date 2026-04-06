@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiberx | متجر الطباعة الشامل</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #FF8C00; --bg: #fdfdfd; --card: #ffffff; --text: #1a1a1a; --border: #eeeeee; --success: #25D366; }
+        [data-theme="dark"] { --bg: #0f1014; --card: #1e1f25; --text: #f5f5f5; --border: #2d2d35; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 100px; transition: 0.3s; }
+        .container { max-width: 450px; margin: 0 auto; padding: 15px; }
+        
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--card); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.2rem; color: var(--primary); }
+        .logo img { width: 40px; height: 40px; border-radius: 8px; object-fit: contain; }
+        .cart-icon { position: relative; cursor: pointer; }
+        .cart-count { position: absolute; top: -8px; right: -8px; background: red; color: white; font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        /* General Styles */
+        .hero { background: #1a1a1a; color: white; padding: 30px 15px; border-radius: 15px; text-align: center; margin: 10px 0; }
+        .main-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .opt-card { background: var(--card); padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); cursor: pointer; border: 1px solid var(--border); }
+        
+        /* Products */
+        .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .prod-card { background: var(--card); padding: 12px; border-radius: 15px; border: 1px solid var(--border); text-align: center; display: flex; flex-direction: column; }
+        .prod-card img { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; background: #eee; }
+        .price { color: var(--primary); font-weight: 800; display: block; margin: 8px 0; }
+        
+        /* Quantity Box */
+        .qty-box { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; background: var(--bg); border-radius: 8px; padding: 5px; border: 1px solid var(--border); }
+        .qty-btn { background: var(--primary); color: white; border: none; width: 28px; height: 28px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        /* Inputs */
+        .input-group { margin-bottom: 15px; text-align: right; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: 700; font-size: 0.9rem; }
+        input, textarea, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 0.9rem; border: 1px solid #ddd; }
+
+        /* Checkout View */
+        #checkout-view { text-align: center; }
+        .order-summary { background: #fff8f0; padding: 15px; border-radius: 12px; border: 1px dashed var(--primary); margin-bottom: 20px; text-align: right; color: #1a1a1a; font-size: 0.9rem; }
+        [data-theme="dark"] .order-summary { background: #25262c; color: #eee; border-color: var(--primary); }
+
+        .bottom-bar { position: fixed; bottom: 0; width: 100%; background: var(--card); padding: 15px; border-top: 1px solid var(--border); max-width: 450px; left: 50%; transform: translateX(-50%); z-index: 100; }
+        .btn-wa { background: var(--success); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-add { background: var(--text); color: var(--bg); border: none; width: 100%; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+        .hidden { display: none; }
+        .back-btn { margin-bottom: 15px; cursor: pointer; color: var(--primary); font-weight: 700; display: flex; align-items: center; gap: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="logo"><img src="https://i.postimg.cc/mD363zPr/fiberx-logo.jpg" alt="Logo"><span>Fiberx</span></div>
+    <div style="display:flex; gap:15px">
+        <i class="fas fa-adjust" onclick="toggleTheme()" style="cursor:pointer"></i>
+        <div class="cart-icon" onclick="showCart()">
+            <i class="fas fa-shopping-basket"></i>
+            <span class="cart-count" id="count">0</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div id="home-view">
+        <div class="hero">
+            <h2>نطبع خيالك.. واقعاً ✨</h2>
+            <p style="font-size: 0.8rem; opacity: 0.8;">كسلا - حي العمال</p>
+        </div>
+        <div class="main-options">
+            <div class="opt-card" onclick="showView('ready-view')"><i class="fas fa-store"></i><span>تسوق الجاهز</span></div>
+            <div class="opt-card" onclick="showView('custom-view')"><i class="fas fa-edit"></i><span>طلب خاص</span></div>
+        </div>
+    </div>
+
+    <div id="ready-view" class="hidden">
+        <div class="back-btn" onclick="showView('home-view')"><i class="fas fa-arrow-right"></i> العودة</div>
+        <div class="products-grid" id="grid"></div>
+    </div>
+
+    <div id="custom-view" class="hidden">
+        <div class="back-btn" onclick="showView('home-view')"><i class="fas fa-arrow-right"></i> العودة</div>
+        <div class="input-group">
+            <label>وصف طلبك الخاص (اختياري):</label>
+            <textarea id="custom-note" placeholder="مثلاً: تيشيرت أسود، مقاس L، صورة شخصية..."></textarea>
+        </div>
+        <p style="font-size: 0.8rem; color: #888;">* يمكنك إضافة منتجات جاهزة مع طلبك الخاص في سلة واحدة.</p>
+    </div>
+
+    <div id="checkout-view" class="hidden">
+        <div class="back-btn" onclick="showView('ready-view')"><i class="fas fa-arrow-right"></i> مراجعة السلة</div>
+        <h3 style="margin-bottom: 15px;">تأكيد بيانات المستلم 🚚</h3>
+        
+        <div class="order-summary" id="order-summary"></div>
+
+        <div class="input-group">
+            <label>الاسم الكامل:</label>
+            <input type="text" id="cust-name" placeholder="ادخل اسمك بالكامل">
+        </div>
+        
+        <div class="input-group">
+            <label>طريقة الاستلام / التوصيل:</label>
+            <select id="delivery-area" onchange="updateSummary()">
+                <option value="0">استلام من المحل (مجاناً)</option>
+                <option value="8000">توصيل داخل كسلا (+8,000 ج.س)</option>
+                <option value="20000">توصيل لباقي ولايات السودان (+20,000 ج.س)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>العنوان (بالتفصيل):</label>
+            <input type="text" id="cust-address" placeholder="الولاية - المدينة - الحي - معلم بارز">
+        </div>
+    </div>
+</div>
+
+<div class="bottom-bar">
+    <button id="main-action-btn" class="btn-wa" onclick="handleMainAction()">
+        <i class="fab fa-whatsapp"></i> <span id="btn-text">إتمام الطلب</span>
+    </button>
+</div>
+
+<script>
+    let cart = [];
+    const sizes = ["S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL", "7XL", "8XL"];
+    const products = [
+        { n: "تيشيرت الغراب", p: 45000, img: "https://f.top4top.io/p_3654zx9sj1.jpg", hasSize: true },
+        { n: "تيشرت محمود عبد العزيز", p: 45000, img: "https://d.top4top.io/p_3654xx5cm1.jpg", hasSize: true },
+        { n: "تيشرت الاسد الملك", p: 45000, img: "https://c.top4top.io/p_3654zuj501.jpg", hasSize: true },
+        { n: "تيشرت الصقر فلاي", p: 45000, img: "https://b.top4top.io/p_3654s2t8g1.jpg", hasSize: true },
+        { n: "تيشرت didas اليد", p: 45000, img: "https://a.top4top.io/p_36546ggqm1.jpg", hasSize: true },
+        { n: "تيشرت انمي 1", p: 45000, img: "https://l.top4top.io/p_3654venmv1.jpg", hasSize: true },
+        { n: "تيشرت Tokyo", p: 45000, img: "https://k.top4top.io/p_3654slfng1.jpg", hasSize: true },
+        { n: "تيشيرت انمي 2", p: 45000, img: "https://j.top4top.io/p_3654anhrh1.jpg", hasSize: true },
+        { n: "تيشرت اديدس", p: 45000, img: "https://i.top4top.io/p_3654b1s2n1.jpg", hasSize: true },
+        { n: "تيشرت بوما", p: 45000, img: "https://h.top4top.io/p_3654gyuja1.jpg", hasSize: true },
+        { n: "تيشرت king", p: 45000, img: "https://i.top4top.io/p_3652z1olo1.jpg", hasSize: true },
+        { n: "تيشرت لوفي vip", p: 45000, img: "https://d.top4top.io/p_36529rvfx1.jpg", hasSize: true },
+        { n: "تيشرت ريال حسب اسمك", p: 45000, img: "https://d.top4top.io/p_3747as6ag1.jpg", hasSize: true },
+        { n: "تيشرت الحبار", p: 45000, img: "https://k.top4top.io/p_37477vol51.jpg", hasSize: true },
+        { n: "تيشرت money", p: 45000, img: "https://l.top4top.io/p_3747im7k71.jpg", hasSize: true },
+        { n: "تيشرت انمي 3", p: 45000, img: "https://a.top4top.io/p_3747j32x11.jpg", hasSize: true },
+        { n: "تيشرت دارك", p: 45000, img: "https://b.top4top.io/p_3747mcu7i1.jpg", hasSize: true },
+        { n: "تيشيرت vip2", p: 45000, img: "https://c.top4top.io/p_3747azo3n1.jpg", hasSize: true },
+        { n: "تيشيرت vip3", p: 45000, img: "https://d.top4top.io/p_3747lwe3b1.jpg", hasSize: true },
+        { n: "تيشرت 4", p: 45000, img: "https://e.top4top.io/p_3747190331.jpg", hasSize: true },
+        { n: "تيشرت انمي 5", p: 45000, img: "https://f.top4top.io/p_3747bs6t01.jpg", hasSize: true },
+        { n: "تيشرت صقر الجديان", p: 45000, img: "https://g.top4top.io/p_3747gz5du1.jpg", hasSize: true },
+        { n: "تيشيرت زمبارين", p: 45000, img: "https://h.top4top.io/p_3747nbybl1.jpg", hasSize: true }
+    ];
+
+    const grid = document.getElementById('grid');
+    products.forEach((item, i) => {
+        grid.innerHTML += `
+            <div class="prod-card">
+                <img src="${item.img}" onerror="this.src='https://via.placeholder.com/150'">
+                <h4>${item.n}</h4>
+                ${item.hasSize ? `<select id="sz-${i}" class="size-select">${sizes.map(s=>`<option value="${s}">${s}</option>`).join('')}</select>` : '<div style="height:33px"></div>'}
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateQty(${i}, -1)">-</button>
+                    <span id="q-${i}">1</span>
+                    <button class="qty-btn" onclick="updateQty(${i}, 1)">+</button>
+                </div>
+                <span class="price">${item.p.toLocaleString()} ج.س</span>
+                <button class="btn-add" onclick="addToCart(${i})">إضافة للسلة</button>
+            </div>
+        `;
+    });
+
+    function updateQty(i, d) {
+        let el = document.getElementById(`q-${i}`);
+        let v = parseInt(el.innerText) + d;
+        if(v >= 1) el.innerText = v;
+    }
+
+    function showView(id) {
+        document.querySelectorAll('.container > div').forEach(v => v.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        document.getElementById('btn-text').innerText = (id === 'checkout-view') ? "تأكيد وإرسال الطلب" : "إتمام الطلب";
+        window.scrollTo(0,0);
+        
+        // تحديث الفاتورة عند الدخول لصفحة الدفع
+        if(id === 'checkout-view') updateSummary();
+    }
+
+    function addToCart(i) {
+        const item = products[i];
+        const qty = parseInt(document.getElementById(`q-${i}`).innerText);
+        const size = item.hasSize ? document.getElementById(`sz-${i}`).value : null;
+
+        let existing = cart.find(x => x.n === item.n && x.size === size);
+        if(existing) existing.qty += qty;
+        else cart.push({ n: item.n, p: item.p, qty: qty, size: size });
+
+        document.getElementById('count').innerText = cart.reduce((s, x) => s + x.qty, 0);
+        alert(`تمت إضافة ${qty} من ${item.n} للسلة ✅`);
+    }
+
+    function handleMainAction() {
+        const checkoutVisible = !document.getElementById('checkout-view').classList.contains('hidden');
+        
+        if(!checkoutVisible) {
+            if(cart.length === 0 && !document.getElementById('custom-note').value.trim()) {
+                return alert("السلة فارغة! يرجى اختيار منتجات أولاً.");
+            }
+            showView('checkout-view');
+        } else {
+            finalizeOrder();
+        }
+    }
+
+    // دالة تحديث الفاتورة (تشمل السلة والتوصيل)
+    function updateSummary() {
+        let subtotal = cart.reduce((s, x) => s + (x.p * x.qty), 0);
+        let deliveryFee = parseInt(document.getElementById('delivery-area').value) || 0;
+        let total = subtotal + deliveryFee;
+
+        let html = `<strong>مراجعة طلبك:</strong><br>`;
+        if(cart.length > 0) {
+            cart.forEach(x => {
+                html += `• ${x.n} (x${x.qty}) ${x.size ? '['+x.size+']' : ''}<br>`;
+            });
+            html += `<hr style="margin:8px 0; border:0; border-top:1px dashed #ccc;">`;
+            html += `<div style="display:flex; justify-content:space-between;"><span>قيمة المنتجات:</span> <span>${subtotal.toLocaleString()} ج.س</span></div>`;
+            html += `<div style="display:flex; justify-content:space-between;"><span>رسوم التوصيل:</span> <span>${deliveryFee === 0 ? 'مجاناً' : deliveryFee.toLocaleString() + ' ج.س'}</span></div>`;
+            html += `<div style="display:flex; justify-content:space-between; margin-top:5px; font-weight:800; font-size:1.05rem; color:var(--primary);"><span>الإجمالي الكلي:</span> <span>${total.toLocaleString()} ج.س</span></div>`;
+        } else {
+            html += `• طلب تصميم خاص فقط<br>`;
+            html += `رسوم التوصيل: ${deliveryFee === 0 ? 'مجاناً' : deliveryFee.toLocaleString() + ' ج.س'}`;
+        }
+        document.getElementById('order-summary').innerHTML = html;
+    }
+
+    function finalizeOrder() {
+        const name = document.getElementById('cust-name').value.trim();
+        const address = document.getElementById('cust-address').value.trim();
+        const note = document.getElementById('custom-note').value.trim();
+        const deliveryOption = document.getElementById('delivery-area').selectedOptions[0].text;
+        const deliveryFee = parseInt(document.getElementById('delivery-area').value) || 0;
+
+        if(!name) return alert("الرجاء إدخال اسمك لإكمال الطلب");
+
+        let subtotal = cart.reduce((s, x) => s + (x.p * x.qty), 0);
+        let total = subtotal + deliveryFee;
+        
+        let msg = `*فـاتـورة طـلـب جـديـد - Fiberx Store* 🚀\n`;
+        msg += `----------------------------\n`;
+        msg += `👤 *بيانات العميل:*\n`;
+        msg += `• الاسم: ${name}\n`;
+        msg += `• التوصيل: ${deliveryOption}\n`;
+        if(address) msg += `• العنوان: ${address}\n`;
+        msg += `\n`;
+
+        if(cart.length > 0) {
+            msg += `📦 *المنتجات:*\n`;
+            cart.forEach(x => {
+                msg += `- ${x.n} *x${x.qty}* ${x.size ? '[M: '+x.size+']' : ''}\n`;
+            });
+            msg += `\n💵 قيمة المنتجات: ${subtotal.toLocaleString()} ج.س\n`;
+            msg += `🚚 التوصيل: ${deliveryFee === 0 ? 'مجاناً' : deliveryFee.toLocaleString() + ' ج.س'}\n`;
+            msg += `💰 *الإجمالي الكلي: ${total.toLocaleString()} ج.س*\n`;
+        }
+
+        if(note) msg += `\n📝 *طلب خاص:*\n${note}\n`;
+
+        msg += `----------------------------\n`;
+        msg += `_تم الإرسال من متجر فايبر إكس_ ✨`;
+
+        const whatsappURL = `https://wa.me/249909466854?text=${encodeURIComponent(msg)}`;
+        window.location.href = whatsappURL;
+    }
+
+    function showCart() {
+        if(cart.length === 0) return alert("السلة فارغة");
+        let list = cart.map(x => `- ${x.n} x${x.qty} ${x.size ? '('+x.size+')':''}`).join('\n');
+        if(confirm(`سلتك تحتوي على:\n${list}\n\nهل تريد تفريغ السلة؟`)) {
+            cart = [];
+            document.getElementById('count').innerText = 0;
+            if(!document.getElementById('checkout-view').classList.contains('hidden')) {
+                updateSummary();
+            }
+        }
+    }
+
+    function toggleTheme() {
+        const b = document.body;
+        b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? '' : 'dark');
+    }
+</script>
+
+</body>
+</html>
